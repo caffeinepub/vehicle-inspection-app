@@ -23,6 +23,7 @@ export default function InspectionForm({ onSuccess }: InspectionFormProps) {
   const [licensePlate, setLicensePlate] = useState('');
   const [mileage, setMileage] = useState('');
   const [condition, setCondition] = useState('');
+  const [glassOption, setGlassOption] = useState('');
   const [damages, setDamages] = useState('');
   const [notes, setNotes] = useState('');
   const [photos, setPhotos] = useState<ExternalBlob[]>([]);
@@ -69,7 +70,7 @@ export default function InspectionForm({ onSuccess }: InspectionFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!make || !model || !year || !vin || !licensePlate || !mileage || !condition) {
+    if (!make || !model || !year || !vin || !licensePlate || !mileage || !condition || !glassOption) {
       toast.error('Please fill in all required fields');
       return;
     }
@@ -101,6 +102,7 @@ export default function InspectionForm({ onSuccess }: InspectionFormProps) {
         damages,
         notes,
         photos,
+        glassOption: { __kind__: 'other', other: glassOption },
       },
       {
         onSuccess: () => {
@@ -113,6 +115,7 @@ export default function InspectionForm({ onSuccess }: InspectionFormProps) {
           setLicensePlate('');
           setMileage('');
           setCondition('');
+          setGlassOption('');
           setDamages('');
           setNotes('');
           setPhotos([]);
@@ -210,6 +213,23 @@ export default function InspectionForm({ onSuccess }: InspectionFormProps) {
                   <SelectItem value="Good">Good</SelectItem>
                   <SelectItem value="Fair">Fair</SelectItem>
                   <SelectItem value="Poor">Poor</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="glassOption">Glass Option *</Label>
+              <Select value={glassOption} onValueChange={setGlassOption} required>
+                <SelectTrigger id="glassOption">
+                  <SelectValue placeholder="Select glass option" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Rear Wind Shield Glass">Rear Wind Shield Glass</SelectItem>
+                  <SelectItem value="Front Wind Shield Glass">Front Wind Shield Glass</SelectItem>
+                  <SelectItem value="Left Front Door Glass">Left Front Door Glass</SelectItem>
+                  <SelectItem value="Right Front Door Glass">Right Front Door Glass</SelectItem>
+                  <SelectItem value="Left Rear Door Glass">Left Rear Door Glass</SelectItem>
+                  <SelectItem value="Right Rear Door Glass">Right Rear Door Glass</SelectItem>
                 </SelectContent>
               </Select>
             </div>

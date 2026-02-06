@@ -59,6 +59,28 @@ export default function FormalReportView({
     }
   };
 
+  const formatGlassOption = (glassOption: any) => {
+    if (!glassOption) return 'Not specified';
+    if (glassOption.__kind__ === 'other' && glassOption.other) {
+      return glassOption.other;
+    }
+    // Handle other variant types
+    const kind = glassOption.__kind__;
+    if (kind === 'clear') return 'Clear';
+    if (kind === 'tinted') return 'Tinted';
+    if (kind === 'factoryTinted') return 'Factory Tinted';
+    if (kind === 'aftermarketTinted') return 'Aftermarket Tinted';
+    if (kind === 'laminated') return 'Laminated';
+    if (kind === 'heatResistant') return 'Heat Resistant';
+    if (kind === 'sunroofTinted') return 'Sunroof Tinted';
+    if (kind === 'privacyGlass') return 'Privacy Glass';
+    if (kind === 'ozoneProtective') return 'Ozone Protective';
+    if (kind === 'impactResistant') return 'Impact Resistant';
+    if (kind === 'acoustic') return 'Acoustic';
+    if (kind === 'solarControl') return 'Solar Control';
+    return 'Not specified';
+  };
+
   const handleEditLetterhead = () => {
     if (letterheadInfo) {
       setEditedLetterhead({ ...letterheadInfo });
@@ -269,9 +291,13 @@ export default function FormalReportView({
                   <span className="font-semibold">Mileage:</span>
                   <span className="ml-2">{inspection.mileage.toString()} miles</span>
                 </div>
-                <div className="col-span-2">
+                <div>
                   <span className="font-semibold">Overall Condition:</span>
                   <span className="ml-2">{inspection.condition}</span>
+                </div>
+                <div>
+                  <span className="font-semibold">Glass Option:</span>
+                  <span className="ml-2">{formatGlassOption(inspection.glassOption)}</span>
                 </div>
               </div>
             </div>

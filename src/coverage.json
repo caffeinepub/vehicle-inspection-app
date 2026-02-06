@@ -1,75 +1,71 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-06T07:58:01.814Z",
+  "generatedAt": "2026-02-06T08:16:21.525Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 3,
-    "implemented": 3,
+    "total": 4,
+    "implemented": 2,
     "items": [
       {
-        "id": "REQ-1",
-        "summary": "Add an in-app camera capture flow to the vehicle inspection photo uploader so inspectors can take photos using the device camera and attach them to an inspection report.",
+        "id": "REQ-4",
+        "summary": "Add a new persisted field named \"glassOption\" to vehicle inspection records, and expose it through all relevant backend public/input types and APIs.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-5",
+        "summary": "Implement a state migration for existing stored inspections to safely initialize the new \"glassOption\" field during upgrade.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-6",
+        "summary": "Add a \"Glass Option\" field to the New Vehicle Inspection form as a required dropdown with the following selectable values: Rear Wind Shield Glass, Front Wind Shield Glass, Left Front Door Glass, Right Front Door Glass, Left Rear Door Glass, Right Rear Door Glass. Submit the selected value to the backend as part of the inspection payload.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/CameraCaptureDialog.tsx",
-          "frontend/src/components/InspectionForm.tsx"
+          "frontend/src/components/InspectionForm.tsx",
+          "frontend/src/backend.d.ts"
         ],
         "matchedFiles": [
-          "frontend/src/components/CameraCaptureDialog.tsx",
-          "frontend/src/components/InspectionForm.tsx"
+          "frontend/src/components/InspectionForm.tsx",
+          "frontend/src/backend.d.ts"
         ]
       },
       {
-        "id": "REQ-2",
-        "summary": "Implement camera settings in the capture modal to let the user choose camera options and persist those preferences locally for future captures.",
+        "id": "REQ-7",
+        "summary": "Display the selected \"Glass Option\" value in inspection detail views and in the formal printable report view.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/utils/cameraSettings.ts",
-          "frontend/src/components/CameraCaptureDialog.tsx"
+          "frontend/src/components/InspectionDetailsDialog.tsx",
+          "frontend/src/components/FormalReportView.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/utils/cameraSettings.ts",
-          "frontend/src/components/CameraCaptureDialog.tsx"
-        ]
-      },
-      {
-        "id": "REQ-3",
-        "summary": "Ensure the camera capture output is compatible with the existing blob storage / photo rendering approach already used across the app.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/CameraCaptureDialog.tsx",
-          "frontend/src/components/InspectionForm.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/CameraCaptureDialog.tsx",
-          "frontend/src/components/InspectionForm.tsx"
+          "frontend/src/components/InspectionDetailsDialog.tsx",
+          "frontend/src/components/FormalReportView.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "build-request.json",
-    "build-template/Dockerfile",
-    "build-template/LICENSE",
-    "build-template/README.md",
-    "build-template/deploy.sh",
-    "build-template/icp.yaml",
-    "build-template/src/backend/canister.yaml",
-    "build-template/src/frontend/canister.yaml",
-    "caffeine.lock.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/camera/useCamera.ts",
-    "frontend/src/components/CameraCaptureDialog.tsx",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/components/FormalReportView.tsx",
+    "frontend/src/components/InspectionDetailsDialog.tsx",
     "frontend/src/components/InspectionForm.tsx",
-    "frontend/src/config.ts",
-    "frontend/src/hooks/useInternetIdentity.ts",
-    "frontend/src/utils/cameraSettings.ts",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

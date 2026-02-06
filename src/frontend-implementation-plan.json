@@ -1,73 +1,48 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "In-app camera capture and camera settings for inspection photos",
+  "title": "Add Glass Option dropdown to inspection form and display in report views",
   "requirements": [
     {
-      "id": "REQ-1",
-      "summary": "Add an in-app camera capture modal to the New Vehicle Inspection photo uploader and attach captures to the existing photos state.",
+      "id": "REQ-6",
+      "summary": "Add required \"Glass Option\" dropdown to the New Vehicle Inspection form and submit it with the inspection payload.",
       "acceptanceCriteria": [
-        "In the \"New Vehicle Inspection\" form, the Photos section includes a \"Use Camera\" action alongside the existing file upload input.",
-        "Tapping \"Use Camera\" opens a modal/dialog that shows a live camera preview (after permission is granted).",
-        "The modal includes a \"Capture\" button that takes a still image and adds it to the existing photos grid preview in the form.",
-        "Captured images are added to the same `photos: ExternalBlob[]` state used by the current upload flow, and can be removed with the existing remove UI.",
-        "If camera permission is denied/unavailable, show an English error message and provide a fallback path to upload files instead.",
-        "Stopping/closing the camera modal releases the camera stream (no camera indicator remains active after closing)."
+        "`frontend/src/components/InspectionForm.tsx` includes a dropdown labeled \"Glass Option *\".",
+        "The dropdown options exactly match: \"Rear Wind Shield Glass\", \"Front Wind Shield Glass\", \"Left Front Door Glass\", \"Right Front Door Glass\", \"Left Rear Door Glass\", \"Right Rear Door Glass\".",
+        "Form validation prevents submission if Glass Option is not selected, and the existing validation/toast messaging remains user-friendly and in English.",
+        "The `useSubmitInspection` mutation is called with the new `glassOption` field included in the `VehicleInspectionInput` payload."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/CameraCaptureDialog.tsx",
-          "operation": "create",
-          "description": "Create a capture modal component that shows a live camera preview and provides Capture/Close controls, using the selected \"camera\" component hook `useCamera` for start/stop/capture and preview refs (verify the component's usage instructions before implementing). Ensure the dialog stops/releases the stream on close and on unmount, and displays English permission/support error messaging with a clear fallback to file upload."
-        },
-        {
           "path": "frontend/src/components/InspectionForm.tsx",
           "operation": "modify",
-          "description": "Add a \"Use Camera\" action next to the existing photo file input, open/close the new CameraCaptureDialog, and append captured images into the existing `photos: ExternalBlob[]` state (same as uploads). Keep existing remove UI working for both uploaded and captured photos. Use the existing `ExternalBlob` type (from the selected \"blob-storage\" component) for photo state compatibility (verify the component's usage instructions before implementing)."
+          "description": "Add a new required Select field labeled \"Glass Option *\" with the exact requested options, store it in component state, validate it before submit (English toast), and include `glassOption` in the object passed to `submitInspection`."
+        },
+        {
+          "path": "frontend/src/backend.d.ts",
+          "operation": "modify",
+          "description": "Update frontend type declarations to align with regenerated candid after backend changes so `VehicleInspectionInput.glassOption` and `VehicleInspectionPublic.glassOption` are typed as a string (Text) rather than the current GlassOption variant, preventing frontend type errors."
         }
       ]
     },
     {
-      "id": "REQ-2",
-      "summary": "Add camera settings (camera selection and quality) inside the capture modal and persist preferences in localStorage.",
+      "id": "REQ-7",
+      "summary": "Show the selected Glass Option value in inspection detail dialogs and in the formal printable report, with a safe fallback for older records.",
       "acceptanceCriteria": [
-        "The capture modal provides a \"Camera\" setting to switch between available video input devices when more than one camera is available (e.g., front/back cameras).",
-        "If enumerating devices is not available until permission is granted, the UI still supports switching via a \"Front/Back\" toggle using `facingMode` as a fallback.",
-        "The capture modal provides a \"Photo quality\" or \"Resolution\" setting with at least 2 options (e.g., Standard / High) that affect capture constraints.",
-        "Selected camera device (or facing mode) and quality setting are saved in browser localStorage and restored on next open.",
-        "All user-facing labels/help/errors for camera settings are in English."
+        "`frontend/src/components/InspectionDetailsDialog.tsx` shows a \"Glass Option\" row/value for an inspection.",
+        "`frontend/src/components/FormalReportView.tsx` includes \"Glass Option\" in the \"Vehicle Information\" section (or an equivalent appropriate section) for printing/PDF.",
+        "If an older inspection has no value (default), the UI displays a clear English fallback (e.g., \"Not specified\") without crashing."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/utils/cameraSettings.ts",
-          "operation": "create",
-          "description": "Add a small localStorage-backed helper for camera preferences (preferred facing mode / optional device label+id when available, and a quality preset such as Standard/High), including safe read/write with defaults and English-only error/label constants where needed."
+          "path": "frontend/src/components/InspectionDetailsDialog.tsx",
+          "operation": "modify",
+          "description": "Add a \"Glass Option\" field to the Vehicle Information display grid. Render a safe, English fallback (e.g., \"Not specified\") when the value is missing/empty to avoid crashes with older inspections."
         },
         {
-          "path": "frontend/src/components/CameraCaptureDialog.tsx",
+          "path": "frontend/src/components/FormalReportView.tsx",
           "operation": "modify",
-          "description": "Add a settings section within the capture dialog: (1) a \"Camera\" selector that uses `navigator.mediaDevices.enumerateDevices()` when available after permission to determine whether multiple cameras exist, and supports switching via the selected \"camera\" component's `switchCamera` / `facingMode` fallback; (2) a \"Photo quality\" (or \"Resolution\") selector with at least two presets that change the `useCamera` config constraints (width/height/quality). Persist and restore these settings using the localStorage helper (verify the component's usage instructions before implementing)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Convert camera captures into ExternalBlob bytes and ensure they render and submit identically to uploaded photos.",
-      "acceptanceCriteria": [
-        "A captured image is converted into bytes and wrapped as `ExternalBlob` (same type as file uploads) before being added to form state.",
-        "Captured images render correctly using `photo.getDirectURL()` in both the inspection form preview grid and the inspection details dialog photos grid after submission.",
-        "Submitting an inspection with camera-captured photos works end-to-end without backend changes."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/CameraCaptureDialog.tsx",
-          "operation": "modify",
-          "description": "On Capture, take the `File` returned by the selected \"camera\" hook, convert it to bytes (ArrayBuffer -> Uint8Array), wrap it as `ExternalBlob.fromBytes(...)` (selected \"blob-storage\" component; verify the component's usage instructions before implementing), and return it to the parent so it is appended to the existing inspection form `photos` state."
-        },
-        {
-          "path": "frontend/src/components/InspectionForm.tsx",
-          "operation": "modify",
-          "description": "Ensure captured `ExternalBlob` objects are appended to the same `photos` array as uploads so the existing preview rendering via `photo.getDirectURL()` and submit payload remain unchanged, enabling end-to-end submission without backend changes."
+          "description": "Include \"Glass Option\" within the Vehicle Information section for the printable report. Use the same safe fallback (e.g., \"Not specified\") when the value is missing/empty so printing/PDF does not break."
         }
       ]
     }

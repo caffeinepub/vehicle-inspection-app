@@ -30,12 +30,27 @@ export const ReportStatus = IDL.Variant({
   'rejected' : IDL.Null,
 });
 export const Time = IDL.Int;
-export const ApprovalComment = IDL.Record({
+export const ApprovalCommentPublic = IDL.Record({
   'status' : ReportStatus,
   'officerName' : IDL.Text,
   'officerPrincipal' : IDL.Principal,
   'comment' : IDL.Text,
   'timestamp' : Time,
+});
+export const GlassOption = IDL.Variant({
+  'ozoneProtective' : IDL.Null,
+  'tinted' : IDL.Null,
+  'other' : IDL.Text,
+  'clear' : IDL.Null,
+  'privacyGlass' : IDL.Null,
+  'sunroofTinted' : IDL.Null,
+  'heatResistant' : IDL.Null,
+  'factoryTinted' : IDL.Null,
+  'impactResistant' : IDL.Null,
+  'aftermarketTinted' : IDL.Null,
+  'acoustic' : IDL.Null,
+  'solarControl' : IDL.Null,
+  'laminated' : IDL.Null,
 });
 export const ExternalBlob = IDL.Vec(IDL.Nat8);
 export const VehicleInspectionPublic = IDL.Record({
@@ -45,7 +60,7 @@ export const VehicleInspectionPublic = IDL.Record({
   'model' : IDL.Text,
   'mileage' : IDL.Nat,
   'licensePlate' : IDL.Text,
-  'approvalComments' : IDL.Vec(ApprovalComment),
+  'approvalComments' : IDL.Vec(ApprovalCommentPublic),
   'inspectorPrincipal' : IDL.Principal,
   'reportStatus' : ReportStatus,
   'make' : IDL.Text,
@@ -53,6 +68,7 @@ export const VehicleInspectionPublic = IDL.Record({
   'year' : IDL.Nat16,
   'notes' : IDL.Text,
   'timestamp' : Time,
+  'glassOption' : GlassOption,
   'photos' : IDL.Vec(ExternalBlob),
   'condition' : IDL.Text,
 });
@@ -69,6 +85,13 @@ export const LetterheadInfoPublic = IDL.Record({
   'address' : IDL.Text,
   'companyName' : IDL.Text,
 });
+export const ApprovalComment = IDL.Record({
+  'status' : ReportStatus,
+  'officerName' : IDL.Text,
+  'officerPrincipal' : IDL.Principal,
+  'comment' : IDL.Text,
+  'timestamp' : Time,
+});
 export const ReviewResult = IDL.Record({
   'status' : ReportStatus,
   'approvalHistory' : IDL.Vec(ApprovalComment),
@@ -84,6 +107,7 @@ export const VehicleInspectionInput = IDL.Record({
   'make' : IDL.Text,
   'year' : IDL.Nat16,
   'notes' : IDL.Text,
+  'glassOption' : GlassOption,
   'photos' : IDL.Vec(ExternalBlob),
   'condition' : IDL.Text,
 });
@@ -178,12 +202,27 @@ export const idlFactory = ({ IDL }) => {
     'rejected' : IDL.Null,
   });
   const Time = IDL.Int;
-  const ApprovalComment = IDL.Record({
+  const ApprovalCommentPublic = IDL.Record({
     'status' : ReportStatus,
     'officerName' : IDL.Text,
     'officerPrincipal' : IDL.Principal,
     'comment' : IDL.Text,
     'timestamp' : Time,
+  });
+  const GlassOption = IDL.Variant({
+    'ozoneProtective' : IDL.Null,
+    'tinted' : IDL.Null,
+    'other' : IDL.Text,
+    'clear' : IDL.Null,
+    'privacyGlass' : IDL.Null,
+    'sunroofTinted' : IDL.Null,
+    'heatResistant' : IDL.Null,
+    'factoryTinted' : IDL.Null,
+    'impactResistant' : IDL.Null,
+    'aftermarketTinted' : IDL.Null,
+    'acoustic' : IDL.Null,
+    'solarControl' : IDL.Null,
+    'laminated' : IDL.Null,
   });
   const ExternalBlob = IDL.Vec(IDL.Nat8);
   const VehicleInspectionPublic = IDL.Record({
@@ -193,7 +232,7 @@ export const idlFactory = ({ IDL }) => {
     'model' : IDL.Text,
     'mileage' : IDL.Nat,
     'licensePlate' : IDL.Text,
-    'approvalComments' : IDL.Vec(ApprovalComment),
+    'approvalComments' : IDL.Vec(ApprovalCommentPublic),
     'inspectorPrincipal' : IDL.Principal,
     'reportStatus' : ReportStatus,
     'make' : IDL.Text,
@@ -201,6 +240,7 @@ export const idlFactory = ({ IDL }) => {
     'year' : IDL.Nat16,
     'notes' : IDL.Text,
     'timestamp' : Time,
+    'glassOption' : GlassOption,
     'photos' : IDL.Vec(ExternalBlob),
     'condition' : IDL.Text,
   });
@@ -213,6 +253,13 @@ export const idlFactory = ({ IDL }) => {
     'contactInfo' : IDL.Text,
     'address' : IDL.Text,
     'companyName' : IDL.Text,
+  });
+  const ApprovalComment = IDL.Record({
+    'status' : ReportStatus,
+    'officerName' : IDL.Text,
+    'officerPrincipal' : IDL.Principal,
+    'comment' : IDL.Text,
+    'timestamp' : Time,
   });
   const ReviewResult = IDL.Record({
     'status' : ReportStatus,
@@ -229,6 +276,7 @@ export const idlFactory = ({ IDL }) => {
     'make' : IDL.Text,
     'year' : IDL.Nat16,
     'notes' : IDL.Text,
+    'glassOption' : GlassOption,
     'photos' : IDL.Vec(ExternalBlob),
     'condition' : IDL.Text,
   });

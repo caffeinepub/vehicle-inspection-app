@@ -14,6 +14,13 @@ export class ExternalBlob {
     static fromBytes(blob: Uint8Array<ArrayBuffer>): ExternalBlob;
     withUploadProgress(onProgress: (percentage: number) => void): ExternalBlob;
 }
+export interface ApprovalCommentPublic {
+    status: ReportStatus;
+    officerName: string;
+    officerPrincipal: Principal;
+    comment: string;
+    timestamp: Time;
+}
 export interface ApprovalComment {
     status: ReportStatus;
     officerName: string;
@@ -37,9 +44,50 @@ export interface VehicleInspectionInput {
     make: string;
     year: number;
     notes: string;
+    glassOption: GlassOption;
     photos: Array<ExternalBlob>;
     condition: string;
 }
+export type GlassOption = {
+    __kind__: "ozoneProtective";
+    ozoneProtective: null;
+} | {
+    __kind__: "tinted";
+    tinted: null;
+} | {
+    __kind__: "other";
+    other: string;
+} | {
+    __kind__: "clear";
+    clear: null;
+} | {
+    __kind__: "privacyGlass";
+    privacyGlass: null;
+} | {
+    __kind__: "sunroofTinted";
+    sunroofTinted: null;
+} | {
+    __kind__: "heatResistant";
+    heatResistant: null;
+} | {
+    __kind__: "factoryTinted";
+    factoryTinted: null;
+} | {
+    __kind__: "impactResistant";
+    impactResistant: null;
+} | {
+    __kind__: "aftermarketTinted";
+    aftermarketTinted: null;
+} | {
+    __kind__: "acoustic";
+    acoustic: null;
+} | {
+    __kind__: "solarControl";
+    solarControl: null;
+} | {
+    __kind__: "laminated";
+    laminated: null;
+};
 export interface UserProfilePublic {
     name: string;
     role: Role;
@@ -55,7 +103,7 @@ export interface VehicleInspectionPublic {
     model: string;
     mileage: bigint;
     licensePlate: string;
-    approvalComments: Array<ApprovalComment>;
+    approvalComments: Array<ApprovalCommentPublic>;
     inspectorPrincipal: Principal;
     reportStatus: ReportStatus;
     make: string;
@@ -63,6 +111,7 @@ export interface VehicleInspectionPublic {
     year: number;
     notes: string;
     timestamp: Time;
+    glassOption: GlassOption;
     photos: Array<ExternalBlob>;
     condition: string;
 }

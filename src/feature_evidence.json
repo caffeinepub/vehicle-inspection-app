@@ -2,10 +2,9 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-an-in-app-camera-capture-flow-to-the-vehicle-inspection-photo-uploader-so-inspectors-can-take-photos-using-the-device-camera-and-attach-them-to-an-inspection-report",
-      "featureTitle": "Add an in-app camera capture flow to the vehicle inspection photo uploader so inspectors can take photos using the device camera and attach them to an inspection report.",
+      "featureId": "feature-add-a-glass-option-field-to-the-new-vehicle-inspection-form-as-a-required-dropdown-with-the-following-selectable-values-rear-wind-shield-glass-front-wind-shield-glass-left-front-door-glass-right-front-door-glass-left-rear-door-glass-right-rear-door-glass-submit-the-selected-value-to-the-backend-as-part-of-the-inspection-payload",
+      "featureTitle": "Add a \"Glass Option\" field to the New Vehicle Inspection form as a required dropdown with the following selectable values: Rear Wind Shield Glass, Front Wind Shield Glass, Left Front Door Glass, Right Front Door Glass, Left Rear Door Glass, Right Rear Door Glass. Submit the selected value to the backend as part of the inspection payload.",
       "files": [
-        "frontend/src/components/CameraCaptureDialog.tsx",
         "frontend/src/components/InspectionForm.tsx"
       ],
       "components": [
@@ -19,16 +18,16 @@
         "camera@1.0.0"
       ],
       "testIds": [
-        "REQ-1"
+        "REQ-6"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-implement-camera-settings-in-the-capture-modal-to-let-the-user-choose-camera-options-and-persist-those-preferences-locally-for-future-captures",
-      "featureTitle": "Implement camera settings in the capture modal to let the user choose camera options and persist those preferences locally for future captures.",
+      "featureId": "feature-display-the-selected-glass-option-value-in-inspection-detail-views-and-in-the-formal-printable-report-view",
+      "featureTitle": "Display the selected \"Glass Option\" value in inspection detail views and in the formal printable report view.",
       "files": [
-        "frontend/src/components/CameraCaptureDialog.tsx",
-        "frontend/src/utils/cameraSettings.ts"
+        "frontend/src/components/FormalReportView.tsx",
+        "frontend/src/components/InspectionDetailsDialog.tsx"
       ],
       "components": [
         "authorization@4.0.0",
@@ -41,29 +40,7 @@
         "camera@1.0.0"
       ],
       "testIds": [
-        "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-ensure-the-camera-capture-output-is-compatible-with-the-existing-blob-storage-photo-rendering-approach-already-used-across-the-app",
-      "featureTitle": "Ensure the camera capture output is compatible with the existing blob storage / photo rendering approach already used across the app.",
-      "files": [
-        "frontend/src/components/CameraCaptureDialog.tsx",
-        "frontend/src/components/InspectionForm.tsx"
-      ],
-      "components": [
-        "authorization@4.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0",
-        "camera@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
+        "REQ-7"
       ],
       "confidence": "high"
     }

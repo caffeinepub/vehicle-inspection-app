@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 3,
+  "projectStateVersion": 5,
   "summary": "New project",
   "architectural_notes": [],
   "known_issues": [],
@@ -29,6 +29,22 @@
         "REQ-3"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-a-glass-option-field-to-the-new-vehicle-inspection-form-as-a-required-dropdown-with-the-following-selectable-values-rear-wind-shield-glass-front-wind-shield-glass-left-front-door-glass-right-front-door-glass-left-rear-door-glass-right-rear-door-glass-submit-the-selected-value-to-the-backend-as-part-of-the-inspection-payload",
+      "title": "Add a \"Glass Option\" field to the New Vehicle Inspection form as a required dropdown with the following selectable values: Rear Wind Shield Glass, Front Wind Shield Glass, Left Front Door Glass, Right Front Door Glass, Left Rear Door Glass, Right Rear Door Glass. Submit the selected value to the backend as part of the inspection payload.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-display-the-selected-glass-option-value-in-inspection-detail-views-and-in-the-formal-printable-report-view",
+      "title": "Display the selected \"Glass Option\" value in inspection detail views and in the formal printable report view.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -36,6 +52,28 @@
       "id": "AR-1",
       "summary": "Add camera setup/settings integration in the app (configure and use device camera).",
       "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Add/define 'Glass option' field with selectable values: Rear Wind Shield Glass, Front Wind Shield Glass, Left Front Door Glass, Right Front Door Glass, Left Rear Door Glass, Right Rear Door Glass.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Add a new persisted field named \"glassOption\" to vehicle inspection records, and expose it through all relevant backend public/input types and APIs.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Implement a state migration for existing stored inspections to safely initialize the new \"glassOption\" field during upgrade.",
+      "reqIds": [
+        "REQ-5"
+      ],
       "status": "pending"
     }
   ],

@@ -1,81 +1,110 @@
 {
   "kind": "build_request",
-  "title": "Add in-app camera capture and camera settings for inspection photos",
+  "title": "Add 'Glass Option' selectable field to vehicle inspection reports",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-1",
-      "text": "Add an in-app camera capture flow to the vehicle inspection photo uploader so inspectors can take photos using the device camera and attach them to an inspection report.",
-      "target": "frontend",
+      "id": "REQ-4",
+      "text": "Add a new persisted field named \"glassOption\" to vehicle inspection records, and expose it through all relevant backend public/input types and APIs.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-6"
         ],
         "quotes": [
-          "ab mujhe is app ke sath camera ki setting karo"
+          "Glass option me Rear Wind Shield Glass\t\t\t\nFront Wind Shield Glass\t\t\t\nLeft Front Door Glass\t\t\t\nRight Front Door Glass\t\t\t\nLeft Rear Door Glass\t\t\t\nRight Rear Door Glass"
         ]
       },
       "acceptanceCriteria": [
-        "In the \"New Vehicle Inspection\" form, the Photos section includes a \"Use Camera\" action alongside the existing file upload input.",
-        "Tapping \"Use Camera\" opens a modal/dialog that shows a live camera preview (after permission is granted).",
-        "The modal includes a \"Capture\" button that takes a still image and adds it to the existing photos grid preview in the form.",
-        "Captured images are added to the same `photos: ExternalBlob[]` state used by the current upload flow, and can be removed with the existing remove UI.",
-        "If camera permission is denied/unavailable, show an English error message and provide a fallback path to upload files instead.",
-        "Stopping/closing the camera modal releases the camera stream (no camera indicator remains active after closing)."
+        "Motoko types are updated to include a new `glassOption : Text` field in `VehicleInspection`, `VehicleInspectionInput`, and `VehicleInspectionPublic`.",
+        "`submitInspection` stores the provided `glassOption` value into the persisted inspection.",
+        "Existing query methods (`getInspection`, `getAllInspections`, `getInspectionsByStatus`, `getInspectionsByInspector`) return `glassOption` as part of the inspection object returned to the frontend.",
+        "Backend candid bindings regenerate cleanly so the frontend can import the updated types without type errors."
       ]
     },
     {
-      "id": "REQ-2",
-      "text": "Implement camera settings in the capture modal to let the user choose camera options and persist those preferences locally for future captures.",
-      "target": "frontend",
+      "id": "REQ-5",
+      "text": "Implement a state migration for existing stored inspections to safely initialize the new \"glassOption\" field during upgrade.",
+      "target": "backend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-6",
+          "msg-7"
         ],
         "quotes": [
-          "ab mujhe is app ke sath camera ki setting karo"
+          "Glass option me Rear Wind Shield Glass\t\t\t\nFront Wind Shield Glass\t\t\t\nLeft Front Door Glass\t\t\t\nRight Front Door Glass\t\t\t\nLeft Rear Door Glass\t\t\t\nRight Rear Door Glass",
+          "ye column hatene hai"
         ]
       },
       "acceptanceCriteria": [
-        "The capture modal provides a \"Camera\" setting to switch between available video input devices when more than one camera is available (e.g., front/back cameras).",
-        "If enumerating devices is not available until permission is granted, the UI still supports switching via a \"Front/Back\" toggle using `facingMode` as a fallback.",
-        "The capture modal provides a \"Photo quality\" or \"Resolution\" setting with at least 2 options (e.g., Standard / High) that affect capture constraints.",
-        "Selected camera device (or facing mode) and quality setting are saved in browser localStorage and restored on next open.",
-        "All user-facing labels/help/errors for camera settings are in English."
+        "A conditional `backend/migration.mo` is added/updated per the project migration policy to populate `glassOption` for existing `VehicleInspection` records.",
+        "After upgrade, previously created inspections remain readable and do not trap due to missing `glassOption`.",
+        "A sensible default is applied for old records (e.g., empty text) when no value existed previously."
       ]
     },
     {
-      "id": "REQ-3",
-      "text": "Ensure the camera capture output is compatible with the existing blob storage / photo rendering approach already used across the app.",
+      "id": "REQ-6",
+      "text": "Add a \"Glass Option\" field to the New Vehicle Inspection form as a required dropdown with the following selectable values: Rear Wind Shield Glass, Front Wind Shield Glass, Left Front Door Glass, Right Front Door Glass, Left Rear Door Glass, Right Rear Door Glass. Submit the selected value to the backend as part of the inspection payload.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-1"
+          "msg-6"
         ],
         "quotes": [
-          "ab mujhe is app ke sath camera ki setting karo"
+          "Glass option me Rear Wind Shield Glass\t\t\t\nFront Wind Shield Glass\t\t\t\nLeft Front Door Glass\t\t\t\nRight Front Door Glass\t\t\t\nLeft Rear Door Glass\t\t\t\nRight Rear Door Glass"
         ]
       },
       "acceptanceCriteria": [
-        "A captured image is converted into bytes and wrapped as `ExternalBlob` (same type as file uploads) before being added to form state.",
-        "Captured images render correctly using `photo.getDirectURL()` in both the inspection form preview grid and the inspection details dialog photos grid after submission.",
-        "Submitting an inspection with camera-captured photos works end-to-end without backend changes."
+        "`frontend/src/components/InspectionForm.tsx` includes a dropdown labeled \"Glass Option *\".",
+        "The dropdown options exactly match: \"Rear Wind Shield Glass\", \"Front Wind Shield Glass\", \"Left Front Door Glass\", \"Right Front Door Glass\", \"Left Rear Door Glass\", \"Right Rear Door Glass\".",
+        "Form validation prevents submission if Glass Option is not selected, and the existing validation/toast messaging remains user-friendly and in English.",
+        "The `useSubmitInspection` mutation is called with the new `glassOption` field included in the `VehicleInspectionInput` payload."
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "text": "Display the selected \"Glass Option\" value in inspection detail views and in the formal printable report view.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-6",
+          "msg-7"
+        ],
+        "quotes": [
+          "Glass option me Rear Wind Shield Glass\t\t\t\nFront Wind Shield Glass\t\t\t\nLeft Front Door Glass\t\t\t\nRight Front Door Glass\t\t\t\nLeft Rear Door Glass\t\t\t\nRight Rear Door Glass",
+          "ye column hatene hai"
+        ]
+      },
+      "acceptanceCriteria": [
+        "`frontend/src/components/InspectionDetailsDialog.tsx` shows a \"Glass Option\" row/value for an inspection.",
+        "`frontend/src/components/FormalReportView.tsx` includes \"Glass Option\" in the \"Vehicle Information\" section (or an equivalent appropriate section) for printing/PDF.",
+        "If an older inspection has no value (default), the UI displays a clear English fallback (e.g., \"Not specified\") without crashing."
       ]
     }
   ],
   "constraints": [
     "Use English for any user-facing text.",
-    "Do not modify files under `frontend/src/components/ui` (compose existing UI components instead).",
-    "Do not modify the immutable auth/actor hook files (`frontend/src/hooks/useInternetIdentity.ts(x)`, `frontend/src/hooks/useActor.ts`, `frontend/src/main.tsx`).",
-    "Backend must remain a single Motoko actor in `backend/main.mo`; do not add additional backend services."
+    "Backend must remain a single-actor Motoko canister; keep logic in `backend/main.mo`.",
+    "Only create/update `backend/migration.mo` when required for schema/state upgrades, following the conditional migration policy.",
+    "Do not modify files under `frontend/src/components/ui` or any other paths listed as immutable in SYSTEM_CONTEXT."
   ],
   "nonGoals": [
-    "Adding video recording or uploading video files.",
-    "Adding real-time streaming features.",
-    "Adding third-party camera/vision SDK integrations."
+    "Do not add or change camera capture, camera settings, or photo upload functionality (already covered by existing features).",
+    "Do not add new roles, authentication methods, or permissions changes.",
+    "Do not introduce external databases or third-party services."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }

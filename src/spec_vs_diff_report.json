@@ -1,51 +1,65 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-06T07:58:01.811Z",
-  "summary": "The diff adds a new CameraCaptureDialog with a live camera preview and capture-to-ExternalBlob flow, plus localStorage-backed quality/facingMode preferences, and wires a camera capture action into InspectionForm. However, device-specific camera selection (by video input deviceId) is not evidenced/likely incomplete, an explicit fallback-to-upload path on permission denial is not evidenced, and an immutable auth hook file was modified contrary to constraints. Some meta/project tracking files were also added without being requested.",
+  "generatedAt": "2026-02-06T08:16:21.522Z",
+  "summary": "The diff adds a new `glassOption` field end-to-end, including a migration and some frontend handling, but it does not match the BuildRequest’s required data shape (Text + 6 fixed dropdown values). The implementation instead introduces a new `GlassOption` variant/enum with many options, and the form submission sends an `other` variant containing free text.",
   "missing_requirements": [
     {
-      "id": "REQ-2",
-      "requirement": "The capture modal provides a \"Camera\" setting to switch between available video input devices when more than one camera is available (e.g., front/back cameras).",
-      "reason": "Although device enumeration state exists, the camera hook is invoked with only `facingMode` (no `deviceId` constraint), and no evidence shows selecting a specific device and applying it to camera constraints.",
+      "id": "REQ-4",
+      "requirement": "Persist and expose `glassOption : Text` in `VehicleInspection`, `VehicleInspectionInput`, and `VehicleInspectionPublic`, and ensure APIs return it.",
+      "reason": "Backend types in the diff define `glassOption` as a `GlassOption` variant type, not `Text` as required by the BuildRequest/AC. This likely breaks the expected candid/type contract for a plain text field.",
       "evidence": [
-        "frontend/src/components/CameraCaptureDialog.tsx",
-        "frontend/src/utils/cameraSettings.ts"
+        "backend/main.mo",
+        "backend/migration.mo"
       ]
     },
     {
-      "id": "REQ-1",
-      "requirement": "If camera permission is denied/unavailable, show an English error message and provide a fallback path to upload files instead.",
-      "reason": "An English permission-denied error string is present, but the diff excerpt does not show any UI/action that provides a fallback path to the existing file upload flow (e.g., button/link to upload).",
+      "id": "REQ-5",
+      "requirement": "Migration initializes `glassOption` for existing records with a sensible default (e.g., empty text) so old inspections remain readable and do not trap.",
+      "reason": "Migration sets `glassOption` to `#clear` (a variant) rather than initializing a missing `Text` field (e.g., \"\"). This does not satisfy the requirement as stated (Text field + sensible default such as empty text).",
       "evidence": [
-        "frontend/src/components/CameraCaptureDialog.tsx"
+        "backend/migration.mo"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "requirement": "Add a required dropdown labeled \"Glass Option *\" with exactly these selectable values: Rear Wind Shield Glass, Front Wind Shield Glass, Left Front Door Glass, Right Front Door Glass, Left Rear Door Glass, Right Rear Door Glass; and submit the selected value as `glassOption` in the payload.",
+      "reason": "The submitted payload maps `glassOption` to a variant `{ __kind__: 'other', other: glassOption }`, implying free-text rather than restricting to the exact 6 required dropdown values. The diff snippet does not show the dropdown options list matching the required strings.",
+      "evidence": [
+        "frontend/src/components/InspectionForm.tsx"
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "requirement": "Show \"Glass Option\" in `InspectionDetailsDialog` and in `FormalReportView`, with a clear fallback like \"Not specified\" for older inspections.",
+      "reason": "While both components define a `formatGlassOption` function with a \"Not specified\" fallback, the provided truncated diff does not show the actual UI rows/fields rendering \"Glass Option\" in the dialog/report.",
+      "evidence": [
+        "frontend/src/components/InspectionDetailsDialog.tsx",
+        "frontend/src/components/FormalReportView.tsx"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Modified an immutable auth/actor hook file (`frontend/src/hooks/useInternetIdentity.ts`) even though the BuildRequest explicitly forbids modifying it.",
-      "reason": "This change is outside the requested camera feature work and violates the stated constraint to not modify immutable auth/actor hook files.",
+      "description": "Introduced a new backend `GlassOption` variant/enum with many tint/material-related options (clear/tinted/factoryTinted/.../other) and uses it for persistence and frontend formatting.",
+      "reason": "The BuildRequest specifies `glassOption : Text` and a frontend dropdown with 6 location-based strings; it does not request a multi-variant glass-type enum or additional options beyond the 6 specified values.",
       "evidence": [
-        "frontend/src/hooks/useInternetIdentity.ts"
-      ]
-    },
-    {
-      "description": "Added project tracking/state artifacts (`project_state.json`, `frontend-file-summaries.txt`) that are not part of the requested camera capture/settings functionality.",
-      "reason": "These files are not requested by any requirement or acceptance criteria and do not appear necessary to implement the feature.",
-      "evidence": [
-        "project_state.json",
-        "frontend-file-summaries.txt"
+        "backend/main.mo",
+        "backend/migration.mo",
+        "frontend/src/components/InspectionDetailsDialog.tsx",
+        "frontend/src/components/FormalReportView.tsx",
+        "frontend/src/components/InspectionForm.tsx"
       ]
     }
   ],
-  "confidence": 0.62,
+  "confidence": 0.74,
   "changed_files": [
+    "backend/main.mo",
+    "backend/migration.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/components/CameraCaptureDialog.tsx",
+    "frontend/src/components/FormalReportView.tsx",
+    "frontend/src/components/InspectionDetailsDialog.tsx",
     "frontend/src/components/InspectionForm.tsx",
-    "frontend/src/hooks/useInternetIdentity.ts",
-    "frontend/src/utils/cameraSettings.ts",
     "project_state.json"
   ]
 }

@@ -12,9 +12,26 @@ import MixinAuthorization "authorization/MixinAuthorization";
 import AccessControl "authorization/access-control";
 import MixinStorage "blob-storage/Mixin";
 import Storage "blob-storage/Storage";
+import Migration "migration";
 
-
+(with migration = Migration.run)
 actor {
+  type GlassOption = {
+    #clear;
+    #tinted;
+    #factoryTinted;
+    #aftermarketTinted;
+    #laminated;
+    #heatResistant;
+    #sunroofTinted;
+    #privacyGlass;
+    #ozoneProtective;
+    #impactResistant;
+    #acoustic;
+    #solarControl;
+    #other : Text;
+  };
+
   type ReportStatus = {
     #pending;
     #approved;
@@ -46,6 +63,7 @@ actor {
     timestamp : Time.Time;
     reportStatus : ReportStatus;
     approvalComments : [ApprovalComment];
+    glassOption : GlassOption;
   };
 
   type VehicleInspectionInput = {
@@ -60,6 +78,7 @@ actor {
     damages : Text;
     notes : Text;
     photos : [Storage.ExternalBlob];
+    glassOption : GlassOption;
   };
 
   type Role = {
@@ -78,6 +97,14 @@ actor {
     contactInfo : Text;
   };
 
+  public type ApprovalCommentPublic = {
+    officerPrincipal : Principal;
+    officerName : Text;
+    comment : Text;
+    timestamp : Time.Time;
+    status : ReportStatus;
+  };
+
   public type VehicleInspectionPublic = {
     id : Text;
     inspectorPrincipal : Principal;
@@ -94,7 +121,8 @@ actor {
     photos : [Storage.ExternalBlob];
     timestamp : Time.Time;
     reportStatus : ReportStatus;
-    approvalComments : [ApprovalComment];
+    approvalComments : [ApprovalCommentPublic];
+    glassOption : GlassOption;
   };
 
   public type UserProfilePublic = {
@@ -197,6 +225,7 @@ actor {
       timestamp = Time.now();
       reportStatus = #pending;
       approvalComments = [];
+      glassOption = input.glassOption;
     };
     inspections.add(input.id, inspection);
   };
@@ -243,6 +272,7 @@ actor {
           timestamp = report.timestamp;
           reportStatus = status;
           approvalComments = updatedComments;
+          glassOption = report.glassOption;
         };
         inspections.add(reportId, updatedInspection);
         {
@@ -250,6 +280,38 @@ actor {
           approvalHistory = updatedComments;
         };
       };
+    };
+  };
+
+  func toVehicleInspectionPublic(inspection : VehicleInspection) : VehicleInspectionPublic {
+    {
+      id = inspection.id;
+      inspectorPrincipal = inspection.inspectorPrincipal;
+      inspectorName = inspection.inspectorName;
+      make = inspection.make;
+      model = inspection.model;
+      year = inspection.year;
+      vin = inspection.vin;
+      licensePlate = inspection.licensePlate;
+      mileage = inspection.mileage;
+      condition = inspection.condition;
+      damages = inspection.damages;
+      notes = inspection.notes;
+      photos = inspection.photos;
+      timestamp = inspection.timestamp;
+      reportStatus = inspection.reportStatus;
+      approvalComments = inspection.approvalComments.map(
+        func(comment) {
+          {
+            officerPrincipal = comment.officerPrincipal;
+            officerName = comment.officerName;
+            comment = comment.comment;
+            timestamp = comment.timestamp;
+            status = comment.status;
+          };
+        }
+      );
+      glassOption = inspection.glassOption;
     };
   };
 
@@ -267,11 +329,13 @@ actor {
         };
 
         // Inspectors can only view their own reports, insurance officers and admins can view all
-        if (userProfile.role == #inspector and report.inspectorPrincipal != caller and not AccessControl.isAdmin(accessControlState, caller)) {
+        if (
+          userProfile.role == #inspector and report.inspectorPrincipal != caller and not AccessControl.isAdmin(accessControlState, caller)
+        ) {
           Runtime.trap("Unauthorized: Inspectors can only view their own reports");
         };
 
-        report;
+        toVehicleInspectionPublic(report);
       };
     };
   };
@@ -291,13 +355,13 @@ actor {
 
     // Inspectors can only see their own reports
     if (userProfile.role == #inspector and not AccessControl.isAdmin(accessControlState, caller)) {
-      return sortedInspections.filter(func(report : VehicleInspection) : Bool {
-        report.inspectorPrincipal == caller
-      });
+      return sortedInspections.filter(func(report : VehicleInspection) : Bool { report.inspectorPrincipal == caller }).map(
+        toVehicleInspectionPublic
+      );
     };
 
     // Insurance officers and admins can see all reports
-    sortedInspections;
+    sortedInspections.map(toVehicleInspectionPublic);
   };
 
   public query ({ caller }) func getInspectionsByStatus(status : ReportStatus) : async [VehicleInspectionPublic] {
@@ -312,19 +376,17 @@ actor {
 
     let allInspections = inspections.values().toArray();
     let sortedInspections = allInspections.sort();
-    let filteredByStatus = sortedInspections.filter(func(report : VehicleInspection) : Bool {
-      report.reportStatus == status
-    });
+    let filteredByStatus = sortedInspections.filter(func(report : VehicleInspection) : Bool { report.reportStatus == status });
 
     // Inspectors can only see their own reports
     if (userProfile.role == #inspector and not AccessControl.isAdmin(accessControlState, caller)) {
       return filteredByStatus.filter(func(report : VehicleInspection) : Bool {
-        report.inspectorPrincipal == caller
-      });
+        report.inspectorPrincipal == caller;
+      }).map(toVehicleInspectionPublic);
     };
 
     // Insurance officers and admins can see all reports
-    filteredByStatus;
+    filteredByStatus.map(toVehicleInspectionPublic);
   };
 
   public query ({ caller }) func getInspectionsByInspector(inspectorPrincipal : Principal) : async [VehicleInspectionPublic] {
@@ -338,15 +400,17 @@ actor {
     };
 
     // Inspectors can only query their own reports
-    if (userProfile.role == #inspector and caller != inspectorPrincipal and not AccessControl.isAdmin(accessControlState, caller)) {
+    if (
+      userProfile.role == #inspector and caller != inspectorPrincipal and not AccessControl.isAdmin(accessControlState, caller)
+    ) {
       Runtime.trap("Unauthorized: Inspectors can only view their own reports");
     };
 
     let allInspections = inspections.values().toArray();
     let sortedInspections = allInspections.sort();
-    sortedInspections.filter(func(report : VehicleInspection) : Bool {
-      report.inspectorPrincipal == inspectorPrincipal
-    });
+    sortedInspections.filter(
+      func(report : VehicleInspection) : Bool { report.inspectorPrincipal == inspectorPrincipal }
+    ).map(toVehicleInspectionPublic);
   };
 
   public shared ({ caller }) func updateLetterheadInfo(newInfo : LetterheadInfo) : async () {

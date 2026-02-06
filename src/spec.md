@@ -1,13 +1,12 @@
 # Specification
 
 ## Summary
-**Goal:** Let inspectors capture vehicle inspection photos directly in-app using the device camera, with configurable camera settings that persist for future use.
+**Goal:** Add a selectable “Glass Option” field to vehicle inspection reports, storing it in the backend and showing it across inspection views and printable reports.
 
 **Planned changes:**
-- Add a “Use Camera” action in the “New Vehicle Inspection” form Photos section alongside the existing file upload.
-- Implement a camera capture modal with live preview, permission handling, capture action, and proper camera stream cleanup on close.
-- Add camera settings in the capture modal: switch camera (device selection when available, otherwise front/back facingMode fallback) and a photo quality/resolution option with at least two levels.
-- Persist selected camera and quality settings to localStorage and restore them when reopening the capture modal.
-- Convert captured images into bytes and wrap them as `ExternalBlob`, adding them to the existing `photos: ExternalBlob[]` state so they render and behave like uploaded photos (including remove UI) and work end-to-end on submission.
+- Backend: Add a persisted `glassOption : Text` field to vehicle inspection record types and all relevant public/input APIs; ensure submit and query methods store/return it.
+- Backend: Add/adjust an upgrade migration to initialize `glassOption` for existing stored inspections with a sensible default (e.g., empty text) so older records remain readable.
+- Frontend: Add a required “Glass Option *” dropdown to the New Vehicle Inspection form with the specified six options; include `glassOption` in the submission payload.
+- Frontend: Display “Glass Option” in inspection details and the formal printable report view, with an English fallback (e.g., “Not specified”) for older/default records.
 
-**User-visible outcome:** In the New Vehicle Inspection form, the user can open an in-app camera, adjust camera/quality settings, capture photos into the same photo grid as uploads, and submit inspections with those captured photos.
+**User-visible outcome:** Users can select a required Glass Option when creating an inspection, and then see that value in inspection details and the printable/formal report; older inspections continue to load and show a clear fallback when not specified.

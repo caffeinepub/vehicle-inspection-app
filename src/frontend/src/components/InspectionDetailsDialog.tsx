@@ -66,6 +66,28 @@ export default function InspectionDetailsDialog({
     }
   };
 
+  const formatGlassOption = (glassOption: any) => {
+    if (!glassOption) return 'Not specified';
+    if (glassOption.__kind__ === 'other' && glassOption.other) {
+      return glassOption.other;
+    }
+    // Handle other variant types
+    const kind = glassOption.__kind__;
+    if (kind === 'clear') return 'Clear';
+    if (kind === 'tinted') return 'Tinted';
+    if (kind === 'factoryTinted') return 'Factory Tinted';
+    if (kind === 'aftermarketTinted') return 'Aftermarket Tinted';
+    if (kind === 'laminated') return 'Laminated';
+    if (kind === 'heatResistant') return 'Heat Resistant';
+    if (kind === 'sunroofTinted') return 'Sunroof Tinted';
+    if (kind === 'privacyGlass') return 'Privacy Glass';
+    if (kind === 'ozoneProtective') return 'Ozone Protective';
+    if (kind === 'impactResistant') return 'Impact Resistant';
+    if (kind === 'acoustic') return 'Acoustic';
+    if (kind === 'solarControl') return 'Solar Control';
+    return 'Not specified';
+  };
+
   const handleReview = (status: ReportStatus) => {
     if (!reviewComment.trim() && status === ReportStatus.rejected) {
       toast.error('Please provide a comment when rejecting a report');
@@ -146,6 +168,10 @@ export default function InspectionDetailsDialog({
                   <div>
                     <span className="text-sm font-medium text-muted-foreground">Condition</span>
                     <p className="text-sm">{inspection.condition}</p>
+                  </div>
+                  <div className="md:col-span-2">
+                    <span className="text-sm font-medium text-muted-foreground">Glass Option</span>
+                    <p className="text-sm">{formatGlassOption(inspection.glassOption)}</p>
                   </div>
                 </div>
               </div>

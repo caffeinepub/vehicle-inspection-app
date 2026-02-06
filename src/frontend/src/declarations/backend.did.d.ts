@@ -17,7 +17,27 @@ export interface ApprovalComment {
   'comment' : string,
   'timestamp' : Time,
 }
+export interface ApprovalCommentPublic {
+  'status' : ReportStatus,
+  'officerName' : string,
+  'officerPrincipal' : Principal,
+  'comment' : string,
+  'timestamp' : Time,
+}
 export type ExternalBlob = Uint8Array;
+export type GlassOption = { 'ozoneProtective' : null } |
+  { 'tinted' : null } |
+  { 'other' : string } |
+  { 'clear' : null } |
+  { 'privacyGlass' : null } |
+  { 'sunroofTinted' : null } |
+  { 'heatResistant' : null } |
+  { 'factoryTinted' : null } |
+  { 'impactResistant' : null } |
+  { 'aftermarketTinted' : null } |
+  { 'acoustic' : null } |
+  { 'solarControl' : null } |
+  { 'laminated' : null };
 export interface LetterheadInfo {
   'contactInfo' : string,
   'address' : string,
@@ -53,6 +73,7 @@ export interface VehicleInspectionInput {
   'make' : string,
   'year' : number,
   'notes' : string,
+  'glassOption' : GlassOption,
   'photos' : Array<ExternalBlob>,
   'condition' : string,
 }
@@ -63,7 +84,7 @@ export interface VehicleInspectionPublic {
   'model' : string,
   'mileage' : bigint,
   'licensePlate' : string,
-  'approvalComments' : Array<ApprovalComment>,
+  'approvalComments' : Array<ApprovalCommentPublic>,
   'inspectorPrincipal' : Principal,
   'reportStatus' : ReportStatus,
   'make' : string,
@@ -71,6 +92,7 @@ export interface VehicleInspectionPublic {
   'year' : number,
   'notes' : string,
   'timestamp' : Time,
+  'glassOption' : GlassOption,
   'photos' : Array<ExternalBlob>,
   'condition' : string,
 }
