@@ -1,0 +1,81 @@
+{
+  "kind": "build_request",
+  "title": "Add in-app camera capture and camera settings for inspection photos",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Add an in-app camera capture flow to the vehicle inspection photo uploader so inspectors can take photos using the device camera and attach them to an inspection report.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "ab mujhe is app ke sath camera ki setting karo"
+        ]
+      },
+      "acceptanceCriteria": [
+        "In the \"New Vehicle Inspection\" form, the Photos section includes a \"Use Camera\" action alongside the existing file upload input.",
+        "Tapping \"Use Camera\" opens a modal/dialog that shows a live camera preview (after permission is granted).",
+        "The modal includes a \"Capture\" button that takes a still image and adds it to the existing photos grid preview in the form.",
+        "Captured images are added to the same `photos: ExternalBlob[]` state used by the current upload flow, and can be removed with the existing remove UI.",
+        "If camera permission is denied/unavailable, show an English error message and provide a fallback path to upload files instead.",
+        "Stopping/closing the camera modal releases the camera stream (no camera indicator remains active after closing)."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Implement camera settings in the capture modal to let the user choose camera options and persist those preferences locally for future captures.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "ab mujhe is app ke sath camera ki setting karo"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The capture modal provides a \"Camera\" setting to switch between available video input devices when more than one camera is available (e.g., front/back cameras).",
+        "If enumerating devices is not available until permission is granted, the UI still supports switching via a \"Front/Back\" toggle using `facingMode` as a fallback.",
+        "The capture modal provides a \"Photo quality\" or \"Resolution\" setting with at least 2 options (e.g., Standard / High) that affect capture constraints.",
+        "Selected camera device (or facing mode) and quality setting are saved in browser localStorage and restored on next open.",
+        "All user-facing labels/help/errors for camera settings are in English."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Ensure the camera capture output is compatible with the existing blob storage / photo rendering approach already used across the app.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "ab mujhe is app ke sath camera ki setting karo"
+        ]
+      },
+      "acceptanceCriteria": [
+        "A captured image is converted into bytes and wrapped as `ExternalBlob` (same type as file uploads) before being added to form state.",
+        "Captured images render correctly using `photo.getDirectURL()` in both the inspection form preview grid and the inspection details dialog photos grid after submission.",
+        "Submitting an inspection with camera-captured photos works end-to-end without backend changes."
+      ]
+    }
+  ],
+  "constraints": [
+    "Use English for any user-facing text.",
+    "Do not modify files under `frontend/src/components/ui` (compose existing UI components instead).",
+    "Do not modify the immutable auth/actor hook files (`frontend/src/hooks/useInternetIdentity.ts(x)`, `frontend/src/hooks/useActor.ts`, `frontend/src/main.tsx`).",
+    "Backend must remain a single Motoko actor in `backend/main.mo`; do not add additional backend services."
+  ],
+  "nonGoals": [
+    "Adding video recording or uploading video files.",
+    "Adding real-time streaming features.",
+    "Adding third-party camera/vision SDK integrations."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

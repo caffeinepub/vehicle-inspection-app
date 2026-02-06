@@ -1,0 +1,16 @@
+{
+  "frontend/src/App.tsx": "Main application component that handles authentication state, profile setup flow, and renders the dashboard for authenticated users with proper loading states.",
+  "frontend/src/hooks/useQueries.ts": "React Query hooks for all backend operations including user profiles, inspection CRUD operations, review functionality, and letterhead info management with proper cache invalidation using correct backend types.",
+  "frontend/src/components/Header.tsx": "Application header with branding, user info display, and login/logout functionality using Internet Identity.",
+  "frontend/src/components/Footer.tsx": "Simple footer component with attribution and link to caffeine.ai.",
+  "frontend/src/components/ProfileSetupModal.tsx": "Modal dialog for first-time user profile setup requiring name and role selection (Inspector or Insurance Officer).",
+  "frontend/src/pages/Dashboard.tsx": "Role-based dashboard that displays different tabs for Inspectors and Insurance Officers, resolves admin status asynchronously, and passes onSuccess callback to InspectionForm.",
+  "frontend/src/components/InspectionForm.tsx": "Comprehensive form for creating vehicle inspection reports with vehicle details, condition assessment, damage documentation, notes, photo upload via file input or camera capture, and proper ExternalBlob handling for both upload methods.",
+  "frontend/src/components/InspectionsList.tsx": "Grid display of all inspection reports with status badges, basic info cards, and ability to view detailed reports using VehicleInspectionPublic and UserProfilePublic types.",
+  "frontend/src/components/ReviewQueue.tsx": "Displays pending inspection reports for Insurance Officers to review with highlighted pending status using correct backend types.",
+  "frontend/src/components/InspectionDetailsDialog.tsx": "Full inspection report viewer with all details, photos, review history, approval/rejection interface for Insurance Officers, and button to open formal report view with letterhead using correct backend types.",
+  "frontend/src/index.css": "Global styles with OKLCH color system featuring a professional blue primary color scheme suitable for insurance applications in both light and dark modes, with print media queries for PDF export.",
+  "frontend/src/components/FormalReportView.tsx": "Professional formal report view component with company letterhead design, editable company info for admins, complete inspection details display, and print/PDF export functionality using VehicleInspectionPublic type.",
+  "frontend/src/utils/cameraSettings.ts": "LocalStorage-backed helper for persisting camera preferences including facing mode, quality presets (standard/high), and optional device selection with safe read/write operations.",
+  "frontend/src/components/CameraCaptureDialog.tsx": "Modal dialog component that provides live camera preview with quality and camera switching settings, captures photos as ExternalBlob, handles permissions/errors gracefully with proper TypeScript typing, and releases camera stream on close."
+}

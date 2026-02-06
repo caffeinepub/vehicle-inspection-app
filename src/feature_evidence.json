@@ -1,0 +1,71 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-add-an-in-app-camera-capture-flow-to-the-vehicle-inspection-photo-uploader-so-inspectors-can-take-photos-using-the-device-camera-and-attach-them-to-an-inspection-report",
+      "featureTitle": "Add an in-app camera capture flow to the vehicle inspection photo uploader so inspectors can take photos using the device camera and attach them to an inspection report.",
+      "files": [
+        "frontend/src/components/CameraCaptureDialog.tsx",
+        "frontend/src/components/InspectionForm.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "camera@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-camera-settings-in-the-capture-modal-to-let-the-user-choose-camera-options-and-persist-those-preferences-locally-for-future-captures",
+      "featureTitle": "Implement camera settings in the capture modal to let the user choose camera options and persist those preferences locally for future captures.",
+      "files": [
+        "frontend/src/components/CameraCaptureDialog.tsx",
+        "frontend/src/utils/cameraSettings.ts"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "camera@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-ensure-the-camera-capture-output-is-compatible-with-the-existing-blob-storage-photo-rendering-approach-already-used-across-the-app",
+      "featureTitle": "Ensure the camera capture output is compatible with the existing blob storage / photo rendering approach already used across the app.",
+      "files": [
+        "frontend/src/components/CameraCaptureDialog.tsx",
+        "frontend/src/components/InspectionForm.tsx"
+      ],
+      "components": [
+        "authorization@4.0.0",
+        "blob-storage@4.0.0",
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0",
+        "camera@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

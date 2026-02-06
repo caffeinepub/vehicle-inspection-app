@@ -1,0 +1,51 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-06T07:58:01.811Z",
+  "summary": "The diff adds a new CameraCaptureDialog with a live camera preview and capture-to-ExternalBlob flow, plus localStorage-backed quality/facingMode preferences, and wires a camera capture action into InspectionForm. However, device-specific camera selection (by video input deviceId) is not evidenced/likely incomplete, an explicit fallback-to-upload path on permission denial is not evidenced, and an immutable auth hook file was modified contrary to constraints. Some meta/project tracking files were also added without being requested.",
+  "missing_requirements": [
+    {
+      "id": "REQ-2",
+      "requirement": "The capture modal provides a \"Camera\" setting to switch between available video input devices when more than one camera is available (e.g., front/back cameras).",
+      "reason": "Although device enumeration state exists, the camera hook is invoked with only `facingMode` (no `deviceId` constraint), and no evidence shows selecting a specific device and applying it to camera constraints.",
+      "evidence": [
+        "frontend/src/components/CameraCaptureDialog.tsx",
+        "frontend/src/utils/cameraSettings.ts"
+      ]
+    },
+    {
+      "id": "REQ-1",
+      "requirement": "If camera permission is denied/unavailable, show an English error message and provide a fallback path to upload files instead.",
+      "reason": "An English permission-denied error string is present, but the diff excerpt does not show any UI/action that provides a fallback path to the existing file upload flow (e.g., button/link to upload).",
+      "evidence": [
+        "frontend/src/components/CameraCaptureDialog.tsx"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Modified an immutable auth/actor hook file (`frontend/src/hooks/useInternetIdentity.ts`) even though the BuildRequest explicitly forbids modifying it.",
+      "reason": "This change is outside the requested camera feature work and violates the stated constraint to not modify immutable auth/actor hook files.",
+      "evidence": [
+        "frontend/src/hooks/useInternetIdentity.ts"
+      ]
+    },
+    {
+      "description": "Added project tracking/state artifacts (`project_state.json`, `frontend-file-summaries.txt`) that are not part of the requested camera capture/settings functionality.",
+      "reason": "These files are not requested by any requirement or acceptance criteria and do not appear necessary to implement the feature.",
+      "evidence": [
+        "project_state.json",
+        "frontend-file-summaries.txt"
+      ]
+    }
+  ],
+  "confidence": 0.62,
+  "changed_files": [
+    "frontend-file-summaries.txt",
+    "frontend/src/components/CameraCaptureDialog.tsx",
+    "frontend/src/components/InspectionForm.tsx",
+    "frontend/src/hooks/useInternetIdentity.ts",
+    "frontend/src/utils/cameraSettings.ts",
+    "project_state.json"
+  ]
+}
